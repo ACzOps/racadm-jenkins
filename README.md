@@ -7,7 +7,6 @@ Containerized RACADM client for managing Dell PowerEdge servers via iDRAC7.
 Download the **Dell iDRAC Tools for Linux** tarball and place it in the project root:
 
 - [Dell-iDRACTools-Web-LX-11.4.0.0-1435_A00.tar.gz](https://dl.dell.com/FOLDER13988164M/1/Dell-iDRACTools-Web-LX-11.4.0.0-1435_A00.tar.gz) (direct link)
-- [All versions](https://www.dell.com/support/home/en-us/product/idrac-tools/drivers) (Dell Support)
 
 ## Setup
 
