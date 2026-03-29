@@ -8,13 +8,12 @@
 # Build:  docker build --build-arg IDRAC_TARBALL="Dell-iDRACTools-Web-LX-11.4.0.0-1435_A00.tar.gz" -t racadm:latest .
 # Usage:  docker compose run --rm racadm getsysinfo
 
-FROM debian:bookworm-slim AS builder
+FROM debian:trixie-slim AS builder
 
 ARG IDRAC_TARBALL
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
       alien \
-      openjdk-25-jdk \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /tmp/idrac
@@ -26,11 +25,12 @@ RUN tar xzf idrac-tools.tar.gz \
     && alien --to-deb *.rpm \
     && dpkg -i *.deb
 
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y \
       libssl3 \
       libc6 \
+      openjdk-25-jdk
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /opt/dell /opt/dell
