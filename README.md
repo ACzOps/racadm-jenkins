@@ -22,7 +22,7 @@ cp .env.example .env
 | `IDRAC_USER` | iDRAC username |
 | `IDRAC_PASS` | iDRAC password |
 | `IDRAC_TARBALL` | Filename of the Dell iDRAC Tools tarball |
-| `RESTART_WAIT_SEC` | Seconds to wait between grace shutdown and server power on |
+| `RESTART_WAIT_SEC` | Seconds to wait between graceful shutdown and power on (`make restart`) |
 
 ## Build
 
@@ -34,20 +34,15 @@ make build
 
 ## Usage
 
+The image does **not** set a Docker `ENTRYPOINT` or `CMD` for RACADM. Each run supplies the full command: the **Compose service name** is `racadm`, and the **program inside the container** is also `racadm`, followed by `--nocertwarn`, `-r` / `-u` / `-p`, and the RACADM subcommand.
+
+The **Makefile** loads your `.env` (same file as `docker compose --env-file`) and expands those variables into the `docker compose run … racadm racadm …` line so you do not retype credentials.
+
 ```bash
 make help
 ```
 
-```
-  build            Build racadm:latest image
-  status           Server power status
-  power-on         Power on the server
-  power-off        Graceful shutdown
-  restart          Graceful restart (shutdown + power on)
-  power-cycle      Power cycle (hard cut + power on)
-  hard-reset       Hard reset (forced reboot)
-  cmd              Run any RACADM command (make cmd CMD="...")
-```
+Typical targets include `build`, `status`, `info`, `inventory`, `version`, `sel`, power actions (`power-on`, `power-off`, `restart`, `power-cycle`, `hard-reset`), `idrac-reset`, `idrac-info`, and `cmd`. Run `make help` for the full list and descriptions.
 
 ### Power management
 
@@ -55,7 +50,7 @@ make help
 make status       # check current power state
 make power-on     # start the server
 make power-off    # graceful OS shutdown
-make restart      # graceful shutdown, wait 30s, power on
+make restart      # graceful shutdown, wait RESTART_WAIT_SEC, power on
 make power-cycle  # hard power cut + immediate power on
 make hard-reset   # forced reboot
 ```
@@ -71,11 +66,11 @@ make power-off ENV_FILE=.env.node03
 
 ### SSL certificate warning
 
-The `--nocertwarn` flag is included in the entrypoint by default, so self-signed iDRAC certificates won't produce security alerts. To re-enable certificate validation, remove `--nocertwarn` from the `entrypoint` in `docker-compose.yml`.
+`--nocertwarn` is added on every run in the Makefile (`COMPOSE` variable) so self-signed iDRAC certificates do not trigger certificate warnings. To enforce certificate validation, remove `--nocertwarn` from that line in the `Makefile` (or omit it when invoking `docker compose` manually).
 
 ### Custom commands
 
-Any RACADM command can be passed through `make cmd`:
+Any RACADM arguments after the connection flags can be passed through `make cmd`:
 
 ```bash
 make cmd CMD="getsysinfo"
@@ -89,7 +84,17 @@ make cmd CMD="storage get vdisks"
 
 ### Direct docker compose
 
+Without Make, you must pass the **binary name** `racadm` after the service name, then connection flags, then the RACADM subcommand. Use `--env-file` so Compose can substitute build-time variables (e.g. `IDRAC_TARBALL`); export or expand `IDRAC_*` in your shell for `-r` / `-u` / `-p`:
+
 ```bash
-docker compose run --rm racadm getsysinfo
-docker compose run --rm racadm serveraction powerstatus
+set -a && source .env && set +a
+docker compose --env-file .env run --rm racadm \
+  racadm --nocertwarn -r "$IDRAC_IP" -u "$IDRAC_USER" -p "$IDRAC_PASS" \
+  getsysinfo
+
+docker compose --env-file .env run --rm racadm \
+  racadm --nocertwarn -r "$IDRAC_IP" -u "$IDRAC_USER" -p "$IDRAC_PASS" \
+  serveraction powerstatus
 ```
+
+Replace `getsysinfo` / `serveraction powerstatus` with any other RACADM subcommand you need.
