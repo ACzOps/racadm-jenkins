@@ -36,5 +36,3 @@ COPY --from=builder /opt/dell /opt/dell
 
 RUN ln -sf /usr/lib/x86_64-linux-gnu/libssl.so.3 /usr/lib/x86_64-linux-gnu/libssl.so \
     && ln -sf /opt/dell/srvadmin/bin/idracadm7 /usr/local/bin/racadm
-
-ENTRYPOINT ["racadm"]

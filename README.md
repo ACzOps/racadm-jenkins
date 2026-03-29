@@ -22,6 +22,7 @@ cp .env.example .env
 | `IDRAC_USER` | iDRAC username |
 | `IDRAC_PASS` | iDRAC password |
 | `IDRAC_TARBALL` | Filename of the Dell iDRAC Tools tarball |
+| `RESTART_WAIT_SEC` | Seconds to wait between grace shutdown and server power on |
 
 ## Build
 
