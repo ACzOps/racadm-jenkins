@@ -14,6 +14,7 @@ ARG IDRAC_TARBALL
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
       alien \
+      openjdk-25-jdk \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /tmp/idrac
