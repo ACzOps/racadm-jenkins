@@ -30,7 +30,7 @@ FROM debian:trixie-slim
 RUN apt-get update && apt-get install -y \
       libssl3 \
       libc6 \
-      openjdk-25-jdk
+      openjdk-25-jdk \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /opt/dell /opt/dell
