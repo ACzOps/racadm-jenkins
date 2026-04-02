@@ -8,9 +8,9 @@ Download the **Dell iDRAC Tools for Linux** tarball and place it in the project 
 
 - [Dell-iDRACTools-Web-LX-11.4.0.0-1435_A00.tar.gz](https://dl.dell.com/FOLDER13988164M/1/Dell-iDRACTools-Web-LX-11.4.0.0-1435_A00.tar.gz) (direct link, accessible as of 2 April 2026)
 
-## Setup
+## Setup for standalone use
 
-Copy the example environment file and fill in your iDRAC credentials:
+If you want to use this image outside Jenkins Docker pipeline without passing credentials in your command line, then copy the example environment file and fill in your iDRAC credentials:
 
 ```bash
 cp .env.example .env
