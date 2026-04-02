@@ -1,4 +1,4 @@
-# RACADM client for Dell PowerEdge R420 (iDRAC7)
+# RACADM client for Dell PowerEdge servers ran in Docker for Jenkins
 # Built from Dell iDRAC Tools RPMs on Debian Bookworm slim
 #
 # iDRAC Tools archive:
@@ -30,9 +30,13 @@ FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y --no-install-recommends \
       libssl3 \
       libc6 \
+      openjdk-25-jdk \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /opt/dell /opt/dell
 
 RUN ln -sf /usr/lib/x86_64-linux-gnu/libssl.so.3 /usr/lib/x86_64-linux-gnu/libssl.so \
     && ln -sf /opt/dell/srvadmin/bin/idracadm7 /usr/local/bin/racadm
+
+# Just CMD instead of ENTRYPOINT to allow Jenkins easily override the command
+CMD ["racadm", "--nocertwarn", "-r", "${IDRAC_IP}", "-u", "${IDRAC_USER}", "-p", "${IDRAC_PASS}"]
