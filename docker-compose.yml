@@ -1,13 +1,13 @@
 services:
   racadm:
-    image: racadm:latest
-    container_name: racadm
+    image: racadm-jenkins:latest
+    container_name: racadm-jenkins
     build:
       context: .
       dockerfile: Dockerfile
       args:
         IDRAC_TARBALL: "${IDRAC_TARBALL}"
-    #entrypoint: ["racadm", "--nocertwarn", "-r", "${IDRAC_IP}", "-u", "${IDRAC_USER}", "-p", "${IDRAC_PASS}"]
+    command: ["racadm", "--nocertwarn", "-r", "${IDRAC_IP}", "-u", "${IDRAC_USER}", "-p", "${IDRAC_PASS}"]
     network_mode: host
     restart: "no"
 
