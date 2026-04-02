@@ -38,5 +38,5 @@ COPY --from=builder /opt/dell /opt/dell
 RUN ln -sf /usr/lib/x86_64-linux-gnu/libssl.so.3 /usr/lib/x86_64-linux-gnu/libssl.so \
     && ln -sf /opt/dell/srvadmin/bin/idracadm7 /usr/local/bin/racadm
 
-# Just CMD instead of ENTRYPOINT to allow Jenkins easilyoverride the command
+# Just CMD instead of ENTRYPOINT to allow Jenkins easily override the command
 CMD ["racadm", "--nocertwarn", "-r", "${IDRAC_IP}", "-u", "${IDRAC_USER}", "-p", "${IDRAC_PASS}"]

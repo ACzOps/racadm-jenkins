@@ -50,14 +50,14 @@ pipeline {
   stages {
     stage('Turn server on and print status') {
       steps {
-        withCredentials([usernamePassword(credentialsId: 'idrac-credentials', usernameVariable: 'IDRAC_USER', passwordVariable: 'IDRAC_PASS')]) {
+        withCredentials([usernamePassword(credentialsId: 'idrac', usernameVariable: 'IDRAC_USER', passwordVariable: 'IDRAC_PASS')]) {
           script {
             if (params.SERVER) {
               def out = sh(
                 script: "racadm -r ${env.SERVER} -u ${env.IDRAC_USER} -p ${env.IDRAC_PASS} serveraction powerup",
                 returnStdout: true
               ).trim()
-              // Just print last line to skip certificate warning
+              // Just print last line of output to skip certificate warnings
               echo out.readLines().last().trim()
             }
           }
